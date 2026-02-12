@@ -111,8 +111,8 @@ const Chatbot: React.FC<{ lang: Language }> = ({ lang }) => {
         audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
       }
 
-      // CORRECTION EFFECTUÉE ICI (Nettoyage de la syntaxe)
-      const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_API_KEY });
+      // @ts-ignore
+      const ai = new GoogleGenAI({ apiKey: (import.meta as any).env.VITE_API_KEY });
       
       const cleanText = text.replace(/\*\*/g, '').replace(/#+/g, '').replace(/(\d+)\./g, 'Option $1.');
       

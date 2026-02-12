@@ -26,8 +26,8 @@ STYLE DE RÉPONSE :
 `;
 
 export const getGeminiResponse = async (userMessage: string, history: { role: string, content: string }[], currentLang: string) => {
-  // Modification CRUCIALE pour Vercel + Vite
-  const genAI = new GoogleGenerativeAI(import.meta.env.VITE_API_KEY);
+  // @ts-ignore
+  const genAI = new GoogleGenerativeAI((import.meta as any).env.VITE_API_KEY);
   
   const langContext = currentLang === 'EN' ? "Speak English with female empathy." : "Parle Français. Sois Douly : une femme experte et accueillante.";
 
