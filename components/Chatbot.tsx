@@ -111,8 +111,10 @@ const Chatbot: React.FC<{ lang: Language }> = ({ lang }) => {
         audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
       }
 
+      // Utilisation de VITE_GEMINI_API_KEY avec bypass TypeScript
       // @ts-ignore
-      const ai = new GoogleGenAI({ apiKey: (import.meta as any).env.VITE_API_KEY });
+      const apiKey = (import.meta as any).env.VITE_GEMINI_API_KEY;
+      const ai = new GoogleGenAI({ apiKey });
       
       const cleanText = text.replace(/\*\*/g, '').replace(/#+/g, '').replace(/(\d+)\./g, 'Option $1.');
       
