@@ -1,0 +1,7 @@
+{
+  "name": "DOULIA Official - IA au Cameroun",
+  "description": "Site web officiel de DOULIA, expert en IA au Cameroun. Design futuriste, chatbot intelligent et performance optimale.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
