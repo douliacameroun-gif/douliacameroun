@@ -1,6 +1,7 @@
+
 export type Language = 'FR' | 'EN';
 
-export type ViewType = 'home' | 'vision' | 'packs' | 'services' | 'engagement' | 'audit';
+export type ViewType = 'home' | 'vision' | 'packs' | 'services' | 'engagement' | 'audit' | 'contact';
 
 export interface Message {
   id: string;
@@ -9,15 +10,15 @@ export interface Message {
   timestamp: Date;
 }
 
-export interface StatItem {
-  label: Record<Language, string>;
-  value: number;
-  suffix: string;
-}
-
-export interface PackItem {
-  title: Record<Language, string>;
-  description: Record<Language, string>;
-  image: string;
-  features: Record<Language, string[]>;
+export interface ContactFormData {
+  name: string;
+  email: string;
+  role: string;
+  companyName: string;
+  companyWebsite: string;
+  companySize: string;
+  annualRevenue: string;
+  budget: string;
+  service: string;
+  message: string;
 }

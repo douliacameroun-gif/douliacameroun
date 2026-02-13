@@ -1,9 +1,9 @@
-/// <reference types="vite/client" />
 
+// Fixed: Provide fallback declarations for Vite environment variables to avoid 'vite/client' not found error.
 interface ImportMetaEnv {
-  readonly VITE_GEMINI_API_KEY: string
+  readonly [key: string]: string;
 }
 
 interface ImportMeta {
-  readonly env: ImportMetaEnv
+  readonly env: ImportMetaEnv;
 }

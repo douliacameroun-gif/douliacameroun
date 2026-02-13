@@ -51,9 +51,21 @@ const Packs: React.FC<{ lang: Language }> = ({ lang }) => {
     }
   ];
 
-  const annexServices = lang === 'FR' 
-    ? "Audit Stratégique • Formation IA • Développement Custom • Maintenance • Veille Technologique • IA Conversationnelle • "
-    : "Strategic Audit • AI Training • Custom Development • Maintenance • Tech Watch • Conversational AI • ";
+  const line1Services = [
+    "Création d'agents IA sur mesure pour tous vos services",
+    "Solutions IA innovantes pour les PME camerounaises",
+    "Audit et conseil stratégique",
+    "Service client automatisé 24/7",
+    "Formations certifiées IA"
+  ];
+
+  const line2Services = [
+    "Processus optimisés par IA native",
+    "Analyse de données intelligentes & Prédiction",
+    "Ingénierie de croissance technologique",
+    "Souveraineté numérique du Cameroun",
+    "Soutien aux infrastructures IA locales"
+  ];
 
   const texts = {
     badge: lang === 'FR' ? "Unités de Puissance" : "Power Units",
@@ -71,9 +83,9 @@ const Packs: React.FC<{ lang: Language }> = ({ lang }) => {
       <div className="absolute inset-0 bg-data-flow opacity-10 pointer-events-none"></div>
       
       <div className="max-w-7xl mx-auto relative z-10 flex flex-col items-center w-full">
-        {/* Header Section Centré Optiquement */}
+        {/* Header Section */}
         <div className="mb-24 text-center animate-fade-in w-full flex flex-col items-center">
-          <div className="inline-flex items-center justify-center px-6 py-2 bg-lime/5 text-lime border border-lime/20 rounded-full text-[9px] font-tech font-bold mb-10 tracking-[0.5em] uppercase shadow-[0_0_20px_rgba(137,201,41,0.05)]">
+          <div className="inline-flex items-center justify-center px-6 py-2 bg-navy border border-lime/20 rounded-full text-[9px] font-tech font-bold mb-10 tracking-[0.5em] uppercase shadow-[0_0_20px_rgba(137,201,41,0.05)] text-lime">
             {texts.badge}
           </div>
           
@@ -101,33 +113,27 @@ const Packs: React.FC<{ lang: Language }> = ({ lang }) => {
                   className="w-full h-full object-cover grayscale opacity-30 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000 group-hover:scale-110" 
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
-                <div className="absolute inset-0 bg-lime/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </div>
 
               <div className="p-8 flex-1 flex flex-col relative">
-                <div className="absolute top-8 right-8 text-6xl text-white/5 font-tech select-none group-hover:text-lime/5 transition-colors">0{idx+1}</div>
-                
-                <h3 className="text-2xl font-tech font-bold text-white mb-2 uppercase group-hover:text-lime transition-colors glitch-hover tracking-tight leading-none">
+                <h3 className="text-2xl font-tech font-bold text-white mb-2 uppercase group-hover:text-lime transition-colors tracking-tight leading-none">
                   {pack.title}
                 </h3>
                 <p className="text-lime text-[10px] font-tech font-bold uppercase tracking-widest mb-6 border-b border-lime/20 pb-4 inline-block">{pack.subtitle}</p>
-                
                 <p className="text-white/60 font-sans text-base leading-relaxed mb-8 min-h-[4em]">{pack.description}</p>
                 
                 <ul className="space-y-4 mb-10 flex-1">
                   {pack.features.map((f, i) => (
-                    <li key={i} className="flex gap-4 text-[10px] text-white/40 font-tech uppercase tracking-[0.2em] items-center group/item">
-                      <div className="w-1.5 h-1.5 rounded-full border border-lime/30 flex items-center justify-center">
-                        <div className="w-1 h-1 rounded-full bg-lime scale-0 group-hover/item:scale-100 transition-transform"></div>
-                      </div>
-                      <span className="group-hover/item:text-white transition-colors">{f}</span>
+                    <li key={i} className="flex gap-4 text-[10px] text-white/40 font-tech uppercase tracking-[0.2em] items-center">
+                      <div className="w-1.5 h-1.5 rounded-full bg-lime/40"></div>
+                      <span>{f}</span>
                     </li>
                   ))}
                 </ul>
 
                 <button 
                   onClick={() => handleAction(pack.prompt)}
-                  className="w-full py-5 rounded-2xl bg-white/5 border border-white/10 text-white font-tech font-bold text-[10px] tracking-[0.3em] uppercase hover:bg-lime hover:text-navy transition-all active:scale-95 shadow-inner"
+                  className="w-full py-4 rounded-xl bg-white/5 border border-white/10 text-white font-tech font-bold text-[10px] tracking-[0.3em] uppercase hover:bg-lime hover:text-navy transition-all active:scale-95"
                 >
                   {texts.btn}
                 </button>
@@ -136,26 +142,43 @@ const Packs: React.FC<{ lang: Language }> = ({ lang }) => {
           ))}
         </div>
 
-        {/* Marquee de Services */}
-        <div className="space-y-16 py-12 relative w-full overflow-hidden">
-          <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none"></div>
-          <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none"></div>
+        {/* Double Marquee de Services avec effets scintillants */}
+        <div className="space-y-4 py-20 relative w-full overflow-hidden border-y border-white/5">
+          <div className="absolute inset-y-0 left-0 w-48 bg-gradient-to-r from-darkNavy to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute inset-y-0 right-0 w-48 bg-gradient-to-l from-darkNavy to-transparent z-10 pointer-events-none"></div>
 
+          {/* Ligne 1 - Vers la gauche */}
           <div className="relative flex overflow-x-hidden">
-            <div className="py-6 animate-marquee whitespace-nowrap flex items-center">
+            <div className="py-2 animate-marquee whitespace-nowrap flex items-center">
               {[1, 2].map((_, idx) => (
                 <div key={idx} className="flex items-center">
-                  {annexServices.split(' • ').map((service, i) => (
+                  {line1Services.map((service, i) => (
                     <span 
                       key={i} 
-                      className={`text-3xl md:text-5xl font-tech font-bold uppercase tracking-tighter mx-12 transition-all hover:scale-110 cursor-default ${
-                        i % 3 === 0 ? 'text-lime' : i % 3 === 1 ? 'text-white/80' : 'text-white/20'
-                      }`}
+                      className="text-2xl md:text-4xl font-tech font-black uppercase tracking-tighter mx-12 text-white/20 animate-shimmer"
                     >
                       {service}
                     </span>
                   ))}
-                  <span className="text-3xl text-white/5 mx-12">•</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Ligne 2 - Vers la droite */}
+          <div className="relative flex overflow-x-hidden">
+            <div className="py-2 animate-marquee-reverse whitespace-nowrap flex items-center">
+              {[1, 2].map((_, idx) => (
+                <div key={idx} className="flex items-center">
+                  {line2Services.map((service, i) => (
+                    <span 
+                      key={i} 
+                      className="text-2xl md:text-4xl font-tech font-black uppercase tracking-tighter mx-12 text-lime/40 animate-shimmer"
+                      style={{ animationDelay: '1.5s' }}
+                    >
+                      {service}
+                    </span>
+                  ))}
                 </div>
               ))}
             </div>

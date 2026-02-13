@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Message, Language } from '../types';
 import { getGeminiResponse } from '../geminiService';
@@ -111,15 +112,14 @@ const Chatbot: React.FC<{ lang: Language }> = ({ lang }) => {
         audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
       }
 
-      // Utilisation de VITE_GEMINI_API_KEY avec bypass TypeScript
-      // @ts-ignore
-      const apiKey = (import.meta as any).env.VITE_GEMINI_API_KEY;
-      const ai = new GoogleGenAI({ apiKey });
+      // Initialize with process.env.API_KEY as per hard requirement
+      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       
       const cleanText = text.replace(/\*\*/g, '').replace(/#+/g, '').replace(/(\d+)\./g, 'Option $1.');
       
+      // Use the correct gemini-2.5-flash-preview-tts model for audio generation
       const response = await ai.models.generateContent({
-        model: "gemini-2.0-flash-exp", 
+        model: "gemini-2.5-flash-preview-tts", 
         contents: [{ parts: [{ text: cleanText }] }],
         config: {
           responseModalities: [Modality.AUDIO],
