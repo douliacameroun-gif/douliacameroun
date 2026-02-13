@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 
-// Correction majeure : On pointe vers le bon dossier pour le style
-import './src/index.css'; 
+// Correction effectuée : On pointe maintenant directement sur le fichier à la racine
+import './index.css'; 
 
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error("Could not find root element");
