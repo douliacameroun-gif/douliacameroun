@@ -1,6 +1,5 @@
-
-// Use the correct @google/genai library
-import { GoogleGenAI } from "@google/genai";
+// geminiService.ts
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const SYSTEM_INSTRUCTION = `
 IDENTITÉ ABSOLUE : 
@@ -28,15 +27,22 @@ STYLE DE RÉPONSE :
 `;
 
 export const getGeminiResponse = async (userMessage: string, history: { role: string, content: string }[], currentLang: string) => {
-  // Always initialize with process.env.API_KEY as per guidelines
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  // CORRECTION CRITIQUE : Utilisation de import.meta.env pour Vite
+  // Assurez-vous que votre fichier .env contient : VITE_API_KEY=votre_clé
+  const apiKey = import.meta.env.VITE_API_KEY || import.meta.env.VITE_GEMINI_API_KEY;
+  
+  if (!apiKey) {
+    console.error("Clé API manquante. Vérifiez votre fichier .env");
+    return "Erreur de configuration : Clé API manquante.";
+  }
+
+  const ai = new GoogleGenAI({ apiKey: apiKey });
   
   const langContext = currentLang === 'EN' ? "Speak English with female empathy." : "Parle Français. Sois Douly : une femme experte et accueillante.";
 
   try {
-    // Use generateContent directly for text tasks with the gemini-3-flash-preview model
     const response = await ai.models.generateContent({ 
-      model: "gemini-3-flash-preview",
+      model: "gemini-2.0-flash", // Utilisation du modèle stable le plus récent (Flash 2.0 est plus rapide)
       contents: [
         ...history.map(h => ({
           role: h.role === 'assistant' ? 'model' : 'user',
@@ -49,8 +55,8 @@ export const getGeminiResponse = async (userMessage: string, history: { role: st
       }
     });
 
-    // Access the .text property directly (not a method)
-    const text = response.text;
+    // Access the .text method depending on SDK version, falling back safely
+    const text = response.text ? response.text() : (response as any).response.text();
 
     return text || "Je rencontre une petite perturbation technique. Appelez-moi au (+237) 6 88 95 40 53, je vous répondrai de vive voix.";
   } catch (error) {

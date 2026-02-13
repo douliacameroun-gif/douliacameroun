@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 
-// Correction du chemin : on va chercher le CSS dans le dossier 'src'
+// Correction majeure : On pointe vers le bon dossier pour le style
 import './src/index.css'; 
 
 const rootElement = document.getElementById('root');
