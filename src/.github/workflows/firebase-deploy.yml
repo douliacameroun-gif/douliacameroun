@@ -1,3 +1,4 @@
+# Déploiement manuel DOULIA
 name: Deploy to Firebase Hosting on merge
 'on':
   push:
@@ -30,4 +31,4 @@ jobs:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_DOULIA }}'
           channelId: live
-          projectId: doulia-officiel
+          projectId: doulia-officiel 
