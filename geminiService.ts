@@ -1,6 +1,4 @@
-
-// Use the correct @google/genai library
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const SYSTEM_INSTRUCTION = `
 IDENTITÉ ABSOLUE : 
@@ -27,34 +25,32 @@ STYLE DE RÉPONSE :
 - Sois concise, patiente et toujours tournée vers la solution.
 `;
 
-export const getGeminiResponse = async (userMessage: string, history: { role: string, content: string }[], currentLang: string) => {
-  // Always initialize with process.env.API_KEY as per guidelines
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  
+// Initialisation correcte pour le Web (Vite)
+const genAI = new GoogleGenerativeAI(import.meta.env.VITE_API_KEY);
+
+export const getGeminiResponse = async (userMessage: string, history: any[], currentLang: string) => {
   const langContext = currentLang === 'EN' ? "Speak English with female empathy." : "Parle Français. Sois Douly : une femme experte et accueillante.";
 
   try {
-    // Use generateContent directly for text tasks with the gemini-3-flash-preview model
-    const response = await ai.models.generateContent({ 
-      model: "gemini-3-flash-preview",
-      contents: [
-        ...history.map(h => ({
-          role: h.role === 'assistant' ? 'model' : 'user',
-          parts: [{ text: h.content }],
-        })),
-        { role: 'user', parts: [{ text: `${langContext}\n\nClient : ${userMessage}` }] }
-      ],
-      config: {
-        systemInstruction: SYSTEM_INSTRUCTION 
-      }
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-1.5-flash",
+      systemInstruction: SYSTEM_INSTRUCTION 
     });
 
-    // Access the .text property directly (not a method)
-    const text = response.text;
+    const chat = model.startChat({
+      history: history.map(h => ({
+        role: h.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: h.content }],
+      })),
+    });
+
+    const result = await chat.sendMessage(`${langContext}\n\nClient : ${userMessage}`);
+    const response = await result.response;
+    const text = response.text();
 
     return text || "Je rencontre une petite perturbation technique. Appelez-moi au (+237) 6 88 95 40 53, je vous répondrai de vive voix.";
   } catch (error) {
     console.error("Gemini Error:", error);
-    return "Mes systèmes sont en cours de mise à jour pour mieux vous servir. Contactez notre équipe au (+237) 6 88 95 40 53.";
+    return "Mes systèmes sont en cours de mise à jour pour mieux vous servir. Contactez notre équipe au (+237) 6 56 30 48 18 / 6 88 95 40 53.";
   }
 };
