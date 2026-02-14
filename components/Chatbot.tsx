@@ -1,9 +1,10 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Message, Language } from '../types';
 import { getGeminiResponse } from '../geminiService';
 import { GoogleGenAI, Modality } from "@google/genai";
 
-// Fonctions d'aide pour l'audio (TTS)
+// Helper functions for audio processing from Gemini TTS
 function decodeBase64(base64: string) {
   const binaryString = atob(base64);
   const len = binaryString.length;
@@ -97,7 +98,7 @@ const Chatbot: React.FC<{ lang: Language }> = ({ lang }) => {
       try {
         source.stop();
       } catch (e) {
-        // Source déjà arrêtée
+        // Source already stopped
       }
     });
     activeSourcesRef.current.clear();
@@ -111,20 +112,12 @@ const Chatbot: React.FC<{ lang: Language }> = ({ lang }) => {
         audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 24000 });
       }
 
-      // CORRECTION IMPORTANTE : Utilisation de import.meta.env pour Vite
-      // Assure-toi d'avoir VITE_API_KEY défini dans ton fichier .env ou sur Netlify
-      const apiKey = import.meta.env.VITE_API_KEY || process.env.API_KEY; 
-      
-      if (!apiKey) {
-          console.warn("Clé API manquante pour le TTS");
-          return;
-      }
-
-      const ai = new GoogleGenAI({ apiKey: apiKey });
+      // Initialize with process.env.API_KEY as per hard requirement
+      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       
       const cleanText = text.replace(/\*\*/g, '').replace(/#+/g, '').replace(/(\d+)\./g, 'Option $1.');
       
-      // Utilisation du modèle TTS
+      // Use the correct gemini-2.5-flash-preview-tts model for audio generation
       const response = await ai.models.generateContent({
         model: "gemini-2.5-flash-preview-tts", 
         contents: [{ parts: [{ text: cleanText }] }],
@@ -167,7 +160,6 @@ const Chatbot: React.FC<{ lang: Language }> = ({ lang }) => {
     setInput('');
     setIsTyping(true);
 
-    // On passe l'historique au service
     const history = messages.map(m => ({ role: m.role, content: m.content }));
     const aiResponse = await getGeminiResponse(val, history, lang);
 
@@ -249,7 +241,6 @@ const Chatbot: React.FC<{ lang: Language }> = ({ lang }) => {
       {isOpen && (
         <div className="w-[92vw] md:w-[380px] max-h-[80vh] h-[600px] mb-4 bg-black border border-lime/40 rounded-[35px] flex flex-col shadow-[0_40px_150px_rgba(0,0,0,1)] overflow-hidden animate-in slide-in-from-bottom-5 pointer-events-auto ring-1 ring-lime/20 relative">
           
-          {/* En-tête du Chat */}
           <div className="p-5 bg-navy/95 backdrop-blur-3xl border-b border-lime/20 flex justify-between items-center shrink-0">
             <div className="flex items-center gap-4">
               <div className="relative">
@@ -270,7 +261,6 @@ const Chatbot: React.FC<{ lang: Language }> = ({ lang }) => {
             </button>
           </div>
 
-          {/* Zone de messages */}
           <div ref={scrollRef} className="flex-1 overflow-y-auto p-5 space-y-8 bg-darkNavy/40 scroll-smooth">
             {messages.map((m) => (
               <div key={m.id} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}>
@@ -294,65 +284,53 @@ const Chatbot: React.FC<{ lang: Language }> = ({ lang }) => {
             )}
           </div>
 
-          {/* Zone de saisie (CORRIGÉE ET COMPLÉTÉE) */}
           <div className="p-5 bg-black border-t border-lime/20">
             <div className="relative flex items-center gap-3 bg-navy/60 border border-white/10 rounded-[25px] p-1.5 focus-within:ring-1 focus-within:ring-lime/40 transition-all">
-               
-               {/* Bouton Microphone */}
-               <button 
+              <button 
                 onClick={toggleListen}
-                className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 ${
-                  isListening 
-                  ? 'bg-red-500 text-white shadow-[0_0_20px_rgba(239,68,68,0.4)] animate-pulse' 
-                  : 'bg-white/5 text-white/60 hover:bg-white/10 hover:text-lime'
-                }`}
+                className={`w-11 h-11 flex items-center justify-center rounded-xl transition-all duration-500 ${isListening ? 'bg-red-500 text-white animate-pulse shadow-[0_0_25px_#ef4444]' : 'bg-white/5 text-lime hover:bg-lime/10 border border-lime/20'}`}
               >
-                {isListening ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9" /></svg>
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" /></svg>
-                )}
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  {isListening ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H10a1 1 0 01-1-1v-4z" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                  )}
+                </svg>
               </button>
-
-              <input
-                type="text"
+              
+              <input 
+                type="text" 
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                placeholder={lang === 'FR' ? "Parlez à Douly..." : "Talk to Douly..."}
-                className="flex-1 bg-transparent border-none text-white placeholder-white/20 focus:ring-0 font-sans text-base px-2"
+                onKeyDown={(e) => { if (e.key === 'Enter') handleSend(); }}
+                placeholder={isListening ? "Écoute..." : "Écrire..."}
+                className="flex-1 bg-transparent border-none outline-none text-white px-2 text-[14px] font-sans placeholder:text-white/20"
               />
 
-              {/* Bouton Envoyer */}
               <button 
-                onClick={() => handleSend()}
-                disabled={!input.trim()}
-                className="w-12 h-12 bg-lime text-navy rounded-2xl flex items-center justify-center hover:shadow-[0_0_20px_rgba(137,201,41,0.4)] transition-all disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-95"
+                onClick={() => handleSend()} 
+                className="w-11 h-11 flex items-center justify-center bg-lime text-navy rounded-xl hover:scale-105 transition-all shadow-[0_0_25px_rgba(137,201,41,0.5)] active:scale-95"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Bouton Flottant (Toggle) */}
-      {!isOpen && (
-        <button
-          onClick={toggleChat}
-          className="group relative w-20 h-20 rounded-[30px] bg-navy flex items-center justify-center shadow-[0_10px_40px_rgba(0,0,0,0.5)] border border-lime/30 hover:scale-110 transition-all duration-500 overflow-hidden pointer-events-auto"
-        >
-          <div className="absolute inset-0 bg-lime/20 blur-xl animate-pulse group-hover:bg-lime/30"></div>
-          <div className="absolute inset-0 bg-gradient-to-tr from-lime/0 via-lime/0 to-lime/40 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          
-          <img src={DOULY_AVATAR} alt="Douly" className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" />
-          
-          {/* Notification Badge */}
-          <div className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full border-4 border-darkNavy flex items-center justify-center animate-bounce">
-            <span className="w-2 h-2 bg-white rounded-full"></span>
-          </div>
-        </button>
-      )}
+      <button 
+        onClick={toggleChat} 
+        className="w-20 h-20 bg-navy p-1 rounded-[25px] shadow-[0_0_60px_rgba(137,201,41,0.4)] flex items-center justify-center hover:scale-110 transition-all pointer-events-auto border-2 border-lime/40 group relative active:scale-95"
+      >
+        <div className="w-full h-full rounded-[20px] overflow-hidden relative">
+          <img src={DOULY_AVATAR} alt="Douly" className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-1000" />
+          <div className="absolute inset-0 bg-gradient-to-t from-navy/80 to-transparent"></div>
+        </div>
+        <div className="absolute -top-2 -right-2 bg-lime text-navy text-[9px] font-tech font-bold px-3 py-1 rounded-full shadow-2xl border-2 border-navy animate-bounce">
+          {messages.length > 2 ? "OUVRIR" : "LIVE"}
+        </div>
+      </button>
     </div>
   );
 };

@@ -43,8 +43,8 @@ const Hero: React.FC<{ lang: Language }> = ({ lang }) => {
       <div className="absolute inset-0 bg-gradient-to-b from-navy via-navy/95 to-navy z-[1]" />
 
       <div className="relative z-10 text-center w-full animate-fade-in flex flex-col items-center">
-        {/* Titre avec taille légèrement augmentée : passage de text-4xl/6xl/7xl à text-5xl/7xl/8xl */}
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-tech font-bold mb-8 leading-[0.95] tracking-tighter gradient-text min-h-[2.2em] px-6 flex flex-col items-center uppercase">
+        {/* Titre avec 'uppercase' réactivé et taille optimisée */}
+        <h1 className="text-4xl md:text-6xl lg:text-7xl font-tech font-bold mb-8 leading-[0.95] tracking-tighter gradient-text min-h-[2.2em] px-6 flex flex-col items-center uppercase">
           <span className="block">{part1}</span>
           <span className="block whitespace-pre-wrap">
             {part2}
